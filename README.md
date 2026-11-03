@@ -1,8 +1,36 @@
 # Verdant & Co. — AI-Powered Customer Support Platform
 
+Live application: https://verdant-co-support-platform.vercel.app/
+Backend API: https://verdant-co-support-api.onrender.com
+API documentation: https://verdant-co-support-api.onrender.com/docs
+
 An AI-assisted customer support platform built with FastAPI, PostgreSQL, React and OpenAI. The application enables customers to submit messages, generates knowledge-base-grounded AI reply suggestions, and allows authorized support agents to review, edit and approve responses.
 
 **AI-generated replies are suggestions only. They are never sent automatically.**
+
+### Key Technical Decisions
+- Used FastAPI and SQLAlchemy with PostgreSQL for structured, persistent conversation and message storage.
+- Implemented HMAC-SHA256 webhook signature verification and duplicate-event handling.
+- Used JWT authentication for agents and customer-specific conversation access.
+- Separated AI draft generation from message persistence so an AI failure does not discard an incoming customer message.
+- Restricted customer conversation responses to customer messages and approved agent replies.
+- Used the Verdant & Co. knowledge base as the source of truth for AI-generated suggestions. Unknown policy and medical questions are not answered with invented information.
+
+Scope limitations: WhatsApp delivery, automated outbound messaging, a full multi-brand administration system, and production-scale monitoring were not implemented within the assessment timeframe.
+
+
+### AI Tool Usage and Limitations
+
+AI tools helped accelerate implementation, explain unfamiliar concepts, generate and refine code, troubleshoot deployment issues, and develop the knowledge-grounded reply generation workflow.
+One incorrect assumption during development was that the production API requests were reaching the backend. Network inspection showed they were instead being sent to the Vercel domain. Checking the actual request URL helped identify and correct the frontend API configuration.
+
+### Assessment Questions
+
+1. A customer message arrives at 2 a.m. and something in your system fails. What does the agent see the next morning, and how would you find out what went wrong?
+The incoming customer message is committed to PostgreSQL before AI draft generation, so an AI failure does not lose the message. The failed draft is recorded with its status and error details; the agent can review the original message and respond manually. I would investigate the stored error, application logs in Render, and the corresponding conversation and message records to identify the failure.
+
+2. This now has to serve 20 brands, each with its own knowledge base and agents. What would you change first, and why?
+I would first introduce proper multi-tenant isolation, making brand_id a mandatory scope across customers, conversations, messages, agents and drafts. I would then implement brand-specific agent permissions and isolated knowledge-base retrieval so that neither customer data nor AI context can leak between brands.
 
 ## 1. Features
 
