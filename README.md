@@ -1,8 +1,6 @@
 # Verdant & Co. — AI-Powered Customer Support Platform
 
 Live application: https://verdant-co-support-platform.vercel.app/
-Backend API: https://verdant-co-support-api.onrender.com
-API documentation: https://verdant-co-support-api.onrender.com/docs
 
 An AI-assisted customer support platform built with FastAPI, PostgreSQL, React and OpenAI. The application enables customers to submit messages, generates knowledge-base-grounded AI reply suggestions, and allows authorized support agents to review, edit and approve responses.
 
